@@ -1,0 +1,8 @@
+<uwsgi>
+	<socket>127.0.0.1:9090</socket>
+	<chdir>/var/www/sadmin/website</chdir>
+	<pythonpath>..</pythonpath>
+	<module>wsgi</module>
+	<processes>4</processes>
+	<daemonize>/var/www/sadmin/uwsgi/uwsgi.log</daemonize>
+</uwsgi>
