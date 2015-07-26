@@ -43,7 +43,7 @@ def gitcommit(request):
 	remotegitpull()
 
 def remotegitpull():
-	hostname='proxy.dapaile.com'
+	hostname='116.93.96.23'
 	username='root'
 	paramiko.util.log_to_file='syslogin.log'
 	webname='/tmp/test/sadmin'
