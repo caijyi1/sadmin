@@ -46,7 +46,7 @@ def remotegitpull():
 	hostname='116.93.96.23'
 	username='root'
 	paramiko.util.log_to_file='syslogin.log'
-	webname='/tmp/test/sadmin'
+	webname='/mnt/sadmin.git'
 	
 	ssh=paramiko.SSHClient()
 	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -55,7 +55,7 @@ def remotegitpull():
 	key = paramiko.RSAKey.from_private_key_file(privatekey,password='cai110110')
 
 	ssh.connect(port=9831,hostname=hostname,username=username,pkey = key)
-	stdin,stdout,stderr=ssh.exec_command('cd %s && git pull ssh://git@proxy.dapaile.com:9831/srv/sadmin.git' % webname)
+	stdin,stdout,stderr=ssh.exec_command('cd %s && git pull git://proxy.dapaile.com:9400/sadmin.git' % webname)
 	print stdout.read()
 	print stderr.read()
 
