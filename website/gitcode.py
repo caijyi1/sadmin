@@ -54,7 +54,7 @@ def remotegitpull():
 	privatekey = os.path.expanduser('/root/.ssh/id_rsa')
 	key = paramiko.RSAKey.from_private_key_file(privatekey,password='cai110110')
 
-	ssh.connect(port=9831,hostname=hostname,username=usrname,pkey = key)
+	ssh.connect(port=9831,hostname=hostname,username=username,pkey = key)
 	stdin,stdout,stderr=ssh.exec_command('cd %s && git pull ssh://git@proxy.dapaile.com:9831/srv/sadmin.git' % webname)
 	print stdout.read()
 	print stdin.read()
