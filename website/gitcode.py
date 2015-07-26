@@ -36,8 +36,8 @@ def gitcommit(request):
 		check_call("git add .",shell=True)
 		check_call('git commit -m %s' % info,shell=True)
 		check_call('git push origin master',shell=True)
-	except CalledProcessError:
-		print "Something wrong."
+	except CalledProcessError,e:
+		print "Something wrong." + str(e) 
 		sys.exit(0)
 
 	remotegitpull()
