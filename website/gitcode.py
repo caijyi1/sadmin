@@ -49,7 +49,7 @@ def remotegitpull():
 	webname='/tmp/test/sadmin'
 	
 	ssh=paramiko.SSHClient()
-	ssh.set_missing_host_key_policy(paramiko.AutoAddpolicy())
+	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 	ssh.load_system_host_keys()
 	privatekey = os.path.expanduser('/root/.ssh/id_rsa')
 	key = paramiko.RSAKey.from_private_key_file(privatekey,password='cai110110')
