@@ -18,7 +18,7 @@ def gitrollback(request):
 		sys.exit(0)
 
 	try:
-		check_output('git push origin master',shell=True)
+		check_output('git push origin master -f',shell=True)
 	except CalledProcessError, e:
 		print "Push Failed: " + str(e)
 
