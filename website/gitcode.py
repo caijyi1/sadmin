@@ -12,15 +12,15 @@ def gitrollback(request):
 	#version = p2.communicate()[0]
 	version = request
 	try:
-		check_output('git reset HEAD --hard %s' % version,shell=True)
-	except CalledProcessError:
-		print "The version number is not correct."
+		check_output('git reset --hard %s' % version,shell=True)
+	except CalledProcessError, e:
+		print "Error info:" + str(e)
 		sys.exit(0)
 
 	try:
 		check_output('git push origin master',shell=True)
-	except CalledProcessError:
-		print "cant push the code,please reslove the conflict."
+	except CalledProcessError, e:
+		print "Push Failed: " + str(e)
 
 	remotegitpull()
 
@@ -36,8 +36,8 @@ def gitcommit(request):
 		check_call("git add .",shell=True)
 		check_call('git commit -m %s' % info,shell=True)
 		check_call('git push origin master',shell=True)
-	except CalledProcessError,e:
-		print "Something wrong." + str(e) 
+	except CalledProcessError, e:
+		print "Push Faild: " + str(e) 
 		sys.exit(0)
 
 	remotegitpull()
