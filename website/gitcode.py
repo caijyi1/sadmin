@@ -22,7 +22,7 @@ def gitrollback(request):
 	#except CalledProcessError, e:
 	#	print "Push Failed: " + str(e)
 
-	remotegitpull(rollback,version)
+	remotegitpull('rollback',version)
 
 def gitcommit(request):
 	
@@ -40,7 +40,7 @@ def gitcommit(request):
 		print "Push Faild: " + str(e) 
 		sys.exit(0)
 	version = ''
-	remotegitpull(update,version)
+	remotegitpull('update',version)
 
 def remotegitpull(request,version):
 	hostname='116.93.96.23'
