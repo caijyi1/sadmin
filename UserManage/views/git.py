@@ -54,7 +54,7 @@ def CommitGit(request):
 		form = EditGitCommentForm(request.POST)
 		if form.is_valid():
 			comment = form.cleaned_data['comment']
-			print comment
+			print type(comment),comment
 			try:
 				check_call("git checkout master",shell=True)
 				check_call("git add .",shell=True)
