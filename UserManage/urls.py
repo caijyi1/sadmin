@@ -27,6 +27,6 @@ urlpatterns = patterns('UserManage.views',
     
     url(r'^web/list/$', 'git.ListGitMessage', name='listweburl'),
     url(r'^web/commit/$', 'git.CommitGit', name='commitweburl'),
-    url(r'^web/rollback/(?P<COMHASH>\s+)/$', 'git.RollbackGit', name='rollbackweburl'),
-    url(r'^web/release/$', 'git.ReleaseGit', name='releaseweburl'),
+    url(r'^web/rollback/(?P<ID>\d+)/$', 'git.RollbackGit', name='rollbackweburl'),
+    url(r'^web/release/(?P<ID>\d+)$', 'git.ReleaseGit', name='releaseweburl'),
 )

@@ -124,7 +124,12 @@ def EditUser(request,ID):
 @PermissionVerify()
 def DeleteUser(request,ID):
     if ID == '1':
-        return HttpResponse(u'超级管理员不允许删除!!!')
+		kwvars = {
+			'ID':ID,
+			'request':request,
+			'error_message':u'超级管理员不允许删除!!!',
+			}
+		return render_to_response('UserManage/release.message.html',kwvars,RequestContext(request))
     else:
         get_user_model().objects.filter(id = ID).delete()
 

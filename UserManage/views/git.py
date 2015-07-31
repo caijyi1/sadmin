@@ -27,48 +27,57 @@ def ListGitMessage(request):
 	
 	return render_to_response('UserManage/web.list.html',kwvars,RequestContext(request))
 
-
-def RollbackGit(request,comhash):
-	#p=Popen("git log",shell=True,stdout=PIPE)
-	#p1=Popen(["sed", "-n", "7p"],stdin=p.stdout,stdout=PIPE)
-	#p2=Popen(["awk"],"{print $2}"),stdin=p1.stdout,stdout=PIPE)
-	#version = p2.communicate()[0]
-	#comhash = comhash
+@login_required
+@PermissionVerify()
+def RollbackGit(request,ID):
+	comhash = GitMessage.objects.filter(id=ID)[0].comhash
 
 	try:
 		check_output('git reset --hard %s' % comhash,shell=True)
 		check_output('git push origin master',shell=True)
 	except CalledProcessError, e:
-		print "Push Failed: " + str(e)
+		kwvars = {
+			'request':request,
+			'error_message':str(e),
+			}
+		return  render_to_response('UserManage/release.message.html',kwvars,RequestContext(request))
+
+	comhash = Popen('git log -1 --pretty=format:"%H"',shell=True,stdout=PIPE).stdout.read()
+	comAuthor = Popen('git log -1 --pretty=format:"%cn"',shell=True,stdout=PIPE).stdout.read()
+	Date = Popen('git log -1 --pretty=format:"%ct"',shell=True,stdout=PIPE).stdout.read()
+	comDate = datetime.datetime.fromtimestamp(int(Date)).strftime('%Y-%m-%d %H:%M:%S')
+	GitMessage.objects.create(comhash=comhash,comAuthor=comAuthor,comDate=comDate,comment=comment)
+
+	return HttpResponseRedirect(reverse('listweburl'))
+		
 
 @login_required
 @PermissionVerify()
 def CommitGit(request):
 	
-	#CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 	GIT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),os.pardir,os.pardir))
-	print GIT_DIR
 	os.chdir(GIT_DIR)
 	
 	if request.method=='POST':
 		form = EditGitCommentForm(request.POST)
 		if form.is_valid():
 			comment = form.cleaned_data['comment']
-			print type(comment),comment
 			try:
 				check_call("git checkout master",shell=True)
 				check_call("git add .",shell=True)
 				check_call('git commit -m %s' % comment,shell=True)
 				check_call('git push origin master',shell=True)
 			except CalledProcessError, e:
-				return  HttpResponse(str(e))
+				kwvars = {
+					'request':request,
+					'error_message':str(e),
+					}
+				return  render_to_response('UserManage/release.message.html',kwvars,RequestContext(request))
+
 			comhash = Popen('git log -1 --pretty=format:"%H"',shell=True,stdout=PIPE).stdout.read()
 			comAuthor = Popen('git log -1 --pretty=format:"%cn"',shell=True,stdout=PIPE).stdout.read()
 			Date = Popen('git log -1 --pretty=format:"%ct"',shell=True,stdout=PIPE).stdout.read()
 			comDate = datetime.datetime.fromtimestamp(int(Date)).strftime('%Y-%m-%d %H:%M:%S')
-
-			print comment,comhash,comAuthor,comDate
-
 			GitMessage.objects.create(comhash=comhash,comAuthor=comAuthor,comDate=comDate,comment=comment)
 			return HttpResponseRedirect(reverse('listweburl'))
 	else:
@@ -78,12 +87,10 @@ def CommitGit(request):
 		'request':request,
 		}
 	return render_to_response('UserManage/web.edit.html',kwvars,RequestContext(request))
-	
-	
-	#return HttpResponse
 
-def ReleaseGit(request):
+def ReleaseGit(request,ID):
 
+	comhash = GitMessage.objects.filter(id=ID)[0].comhash
 	hostname='116.93.96.23'
 	username='root'
 	paramiko.util.log_to_file='syslogin.log'
@@ -96,12 +103,17 @@ def ReleaseGit(request):
 		privatekey = os.path.expanduser('/root/.ssh/id_rsa')
 		key = paramiko.RSAKey.from_private_key_file(privatekey,password='cai110110')
 		ssh.connect(port=9831,hostname=hostname,username=username,pkey = key)
-		stdin,stdout,stderr=ssh.exec_command('cd %s && git pull git://proxy.dapaile.com:9400/sadmin.git' % webname)
+		stdin,stdout,stderr=ssh.exec_command('cd %s && git pull git://proxy.dapaile.com:9400/sadmin.git && git reset --hard %s' %  (webname, comhash))
 	except:
+		ssh.close()
 		return HttpResponse(u'连接远程服务器推送代码出错...')
 
-	#return HttpResponse
+	kwvars = {
+		'error_message':stderr.read(),
+		'success_message':stdout.read(),
+		'requset':request,
+		}
 	print stdout.read()
 	print stderr.read()
-
 	ssh.close()
+	return render_to_response('UserManage/release.message.html',kwvars,RequestContext(request))

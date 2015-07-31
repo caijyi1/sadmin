@@ -15,7 +15,9 @@
     </div>
 
     <hr/>
-
+	<div class="alert alert-info" role="alert">
+		<strong>请遵循先(提交代码|回滚代码)待测试正常后将其发布到生产！</strong>
+	</div>
     <table class="table table-hover table-striped  table-bordered table-condensed">
         <tr>
             <th>提交HASH</th>
@@ -33,8 +35,8 @@
 					<td>{{ i.comment }}</td>
                     <td class="host_buttom">
 						<!-- <a class="btn btn-info btn-xs"  href="#" onclick="return confirm('是否确认提交本地代码？')">提交代码</a> -->
-                        <a class="btn btn-warning btn-xs" href="#" onclick="return confirm('是否确认要回滚代码？')">回滚代码</a>
-                        <a class="btn btn-danger btn-xs" href="#" onclick="return confirm('是否确认要发布代码到生产？')">发布代码</a>
+						<a class="btn btn-warning btn-xs" href={% url "rollbackweburl" i.id %} onclick="return confirm('是否确认要回滚代码？')">回滚代码</a>
+						<a class="btn btn-danger btn-xs" href={% url "releaseweburl" i.id %} onclick="return confirm('是否确认要发布代码到生产？')">发布代码</a>
                     </td>
                 </tr>
             {% endfor %}
