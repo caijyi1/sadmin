@@ -11,18 +11,20 @@ def gitrollback(request):
 	#p2=Popen(["awk"],"{print $2}"),stdin=p1.stdout,stdout=PIPE)
 	#version = p2.communicate()[0]
 	version = request
+	
 	try:
 		check_output('git reset --hard %s' % version,shell=True)
 	except CalledProcessError, e:
 		print "Error info:" + str(e)
 		sys.exit(0)
 
-	try:
-		check_output('git push origin master',shell=True)
-	except CalledProcessError, e:
-		print "Push Failed: " + str(e)
+	#try:
+	#	check_output('git push origin master -f',shell=True)
+	#except CalledProcessError, e:
+	#	print "Push Failed: " + str(e)
 
-	remotegitpull()
+	remotegitpull('rollback',version)
+
 
 def gitcommit(request):
 	
@@ -39,15 +41,17 @@ def gitcommit(request):
 	except CalledProcessError, e:
 		print "Push Faild: " + str(e) 
 		sys.exit(0)
+	version = ''
+	remotegitpull('update',version)
 
-	remotegitpull()
-
-def remotegitpull():
+def remotegitpull(request,version):
 	hostname='116.93.96.23'
 	username='root'
 	paramiko.util.log_to_file='syslogin.log'
 	webname='/mnt/sadmin.git'
+	print version
 	
+
 	ssh=paramiko.SSHClient()
 	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 	ssh.load_system_host_keys()
@@ -56,6 +60,9 @@ def remotegitpull():
 
 	ssh.connect(port=9831,hostname=hostname,username=username,pkey = key)
 	stdin,stdout,stderr=ssh.exec_command('cd %s && git pull git://proxy.dapaile.com:9400/sadmin.git' % webname)
+	if  request == 'rollback':
+		print version
+		stdin,stdout,stderr=ssh.exec_command('cd %s && git reset --hard %s ' % (webname,version))
 	print stdout.read()
 	print stderr.read()
 
