@@ -47,14 +47,16 @@ def CommitGit(request):
 	
 	#CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 	GIT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),os.pardir,os.pardir))
+	print GIT_DIR
 	os.chdir(GIT_DIR)
 	
 	if request.method=='POST':
 		form = EditGitCommentForm(request.POST)
 		if form.is_valid():
 			comment = form.cleaned_data['comment']
+			print comment
 			try:
-				check_call("git chceckout master")
+				check_call("git checkout master",shell=True)
 				check_call("git add .",shell=True)
 				check_call('git commit -m %s' % comment,shell=True)
 				check_call('git push origin master',shell=True)
