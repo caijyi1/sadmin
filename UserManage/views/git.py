@@ -54,6 +54,7 @@ def CommitGit(request):
 		if form.is_valid():
 			comment = form.cleaned_data['comment']
 			try:
+				check_call("git chceckout master")
 				check_call("git add .",shell=True)
 				check_call('git commit -m %s' % comment,shell=True)
 				check_call('git push origin master',shell=True)
