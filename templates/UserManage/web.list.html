@@ -1,0 +1,45 @@
+{% extends "common/base.side.html" %}
+
+{% block title %}
+    List User
+{% endblock %}
+
+{% block rcontent %}
+    <div class="btn-toolbar">
+        <div class="btn-group">
+			{% url "commitweburl" as thecommitweburl %}
+			<a class="btn btn-default {%if request.path = thecommitweburl %} active {%endif%}" href={{ thecommitweburl }}><span class="glyphicon glyphicon-edit"></span>提交代码</a>
+            {% url "listweburl" as thelistweburl %}
+            <a class="btn btn-default {%if request.path = thelistweburl%} active {%endif%}" href={{ thelistweburl }}><span class="glyphicon glyphicon-list"></span>更新列表</a>
+        </div>
+    </div>
+
+    <hr/>
+
+    <table class="table table-hover table-striped  table-bordered table-condensed">
+        <tr>
+            <th>提交HASH</th>
+            <th>作者</th>
+            <th>日期</th>
+            <th>提交标题信息</th>
+            <th>操作</th>
+        </tr>
+
+            {% for i in lPage %}
+                <tr style="font-size: 13px;">
+                    <td>{{ i.comhash }}</td>
+                    <td>{{ i.comAuthor }}</td>
+                    <td>{{ i.comDate|date:"Y-m-d H:i:s" }}</td>
+					<td>{{ i.comment }}</td>
+                    <td class="host_buttom">
+						<!-- <a class="btn btn-info btn-xs"  href="#" onclick="return confirm('是否确认提交本地代码？')">提交代码</a> -->
+                        <a class="btn btn-warning btn-xs" href="#" onclick="return confirm('是否确认要回滚代码？')">回滚代码</a>
+                        <a class="btn btn-danger btn-xs" href="#" onclick="return confirm('是否确认要发布代码到生产？')">发布代码</a>
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </table>
+
+    {% include "common/paginator.html" %}
+{% endblock %}
