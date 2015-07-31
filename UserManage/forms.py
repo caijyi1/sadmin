@@ -5,7 +5,7 @@
 from django import forms
 from django.contrib import auth
 from django.contrib.auth import get_user_model
-from UserManage.models import User,RoleList,PermissionList
+from UserManage.models import User,RoleList,PermissionList,GitMessage
 
 class LoginUserForm(forms.Form):
     username = forms.CharField(label=u'账 号',error_messages={'required':u'账号不能为空'},
@@ -164,3 +164,15 @@ class RoleListForm(forms.ModelForm):
         self.fields['name'].error_messages={'required':u'请输入名称'}
         self.fields['permission'].label=u'URL'
         self.fields['permission'].required=False
+
+class EditGitCommentForm(forms.ModelForm):
+	class Meta:
+		model = GitMessage
+		fields = {'comment',}
+		widgets = {
+			'comment' : forms.TextInput(attrs={'class':'form-control'}),
+			}
+	def __init__(self,*args,**kwargs):
+		super(EditGitCommentForm,self).__init__(*args,**kwargs)
+		self.fields['comment'].label=u'提交信息标题'
+		self.fields['comment'].error_messages={'required':u'请输入提交信息标题'}

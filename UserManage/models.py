@@ -62,3 +62,11 @@ class User(AbstractBaseUser):
         if self.is_active and self.is_superuser:
             return True
 
+class GitMessage(models.Model):
+	comhash = models.CharField(max_length=50)
+	comAuthor = models.CharField(max_length=50)
+	comDate = models.DateTimeField()
+	comment = models.CharField(max_length=255)
+
+	def __unicode__(self):
+		return self.comhash

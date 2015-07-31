@@ -23,4 +23,10 @@ urlpatterns = patterns('UserManage.views',
     url(r'^permission/list/$', 'permission.ListPermission', name='listpermissionurl'),
     url(r'^permission/edit/(?P<ID>\d+)/$', 'permission.EditPermission', name='editpermissionurl'),
     url(r'^permission/delete/(?P<ID>\d+)/$', 'permission.DeletePermission', name='deletepermissionurl'),
+
+    
+    url(r'^web/list/$', 'git.ListGitMessage', name='listweburl'),
+    url(r'^web/commit/$', 'git.CommitGit', name='commitweburl'),
+    url(r'^web/rollback/(?P<COMHASH>\s+)/$', 'git.RollbackGit', name='rollbackweburl'),
+    url(r'^web/release/$', 'git.ReleaseGit', name='releaseweburl'),
 )
