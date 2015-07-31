@@ -44,6 +44,7 @@ def RollbackGit(request,ID):
 
 	comhash = Popen('git log -1 --pretty=format:"%H"',shell=True,stdout=PIPE).stdout.read()
 	comAuthor = Popen('git log -1 --pretty=format:"%cn"',shell=True,stdout=PIPE).stdout.read()
+	comment = Popen('git log -1 --pretty=format:"%s"',shell=True,stdout=PIPE).stdout.read()
 	Date = Popen('git log -1 --pretty=format:"%ct"',shell=True,stdout=PIPE).stdout.read()
 	comDate = datetime.datetime.fromtimestamp(int(Date)).strftime('%Y-%m-%d %H:%M:%S')
 	GitMessage.objects.create(comhash=comhash,comAuthor=comAuthor,comDate=comDate,comment=comment)

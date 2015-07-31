@@ -15,7 +15,9 @@
     </div>
 
     <hr/>
-
+	<div class="alert alert-warning" role="alert">
+		<strong>执行操作之后请耐心等待不要刷新，以免发生意外！</strong>
+	</div>
     <form class="form-horizontal" role="form" action={% url "commitweburl" %} method="POST" >
     {% csrf_token %}
 
