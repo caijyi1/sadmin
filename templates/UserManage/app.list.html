@@ -1,0 +1,50 @@
+{% extends "common/base.side.html" %}
+
+{% block title %}
+    List App
+{% endblock %}
+
+{% block rcontent %}
+    <div class="btn-toolbar">
+        <div class="btn-group">
+            {% url "listappurl" as thelistappurl %}
+            <a class="btn btn-default {%if request.path = thelistappurl%} active {%endif%}" href={{ thelistappurl }}><span class="glyphicon glyphicon-list"></span>游戏项目列表</a>
+        </div>
+    </div>
+
+    <hr/>
+	<div class="alert alert-warning" role="alert">
+		<strong>请先停服再发布版本！</strong>
+		<strong>执行操作后请不要刷新，以免发生意外！</strong>
+	</div>
+    <table class="table table-hover table-striped  table-bordered table-condensed">
+        <tr>
+            <th>项目App</th>
+            <th>版本</th>
+            <th>PID</th>
+            <th>md5sum</th>
+            <th>操作</th>
+        </tr>
+
+            {% for i in lPage %}
+                <tr style="font-size: 13px;">
+                    <td>{{ i.appname }}</td>
+                    <td>{{ i.version }}</td>
+                    <td>{{ i.pid }}</td>
+					<td>{{ i.md5sum }}</td>
+                    <td class="host_buttom">
+						<a class="btn btn-info btn-xs" href={% url "releaseappurl" i.id %} onclick="return confirm('是否确认要发布新版本？')">发布最新版本</a>
+						<a class="btn btn-warning btn-xs" href={% url "rollbackappurl" i.id %} onclick="return confirm('是否确认要回滚版本？')">回滚到此版本</a>
+						{% if i.pid %}
+						<a class="btn btn-danger btn-xs" href={% url "stopappurl" i.id %} onclick="return confirm('是否确认要停服？')">停服</a>
+						{% else %}
+						<a class="btn btn-success btn-xs" href={% url "startappurl" i.id %} onclick="return confirm('是否确认要开服？')">开服</a>
+						{%endif%}
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </table>
+
+    {% include "common/paginator.html" %}
+{% endblock %}

@@ -176,3 +176,4 @@ class EditGitCommentForm(forms.ModelForm):
 		super(EditGitCommentForm,self).__init__(*args,**kwargs)
 		self.fields['comment'].label=u'提交信息标题'
 		self.fields['comment'].error_messages={'required':u'请输入提交信息标题'}
+

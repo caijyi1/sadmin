@@ -18,15 +18,14 @@ urlpatterns = patterns('UserManage.views',
     url(r'^role/delete/(?P<ID>\d+)/$', 'role.DeleteRole', name='deleteroleurl'),
 
     url(r'^permission/deny/$', 'permission.NoPermission', name='permissiondenyurl'),
-
     url(r'^permission/add/$', 'permission.AddPermission', name='addpermissionurl'),
     url(r'^permission/list/$', 'permission.ListPermission', name='listpermissionurl'),
     url(r'^permission/edit/(?P<ID>\d+)/$', 'permission.EditPermission', name='editpermissionurl'),
     url(r'^permission/delete/(?P<ID>\d+)/$', 'permission.DeletePermission', name='deletepermissionurl'),
 
     
-    url(r'^web/list/$', 'git.ListGitMessage', name='listweburl'),
-    url(r'^web/commit/$', 'git.CommitGit', name='commitweburl'),
-    url(r'^web/rollback/(?P<ID>\d+)/$', 'git.RollbackGit', name='rollbackweburl'),
-    url(r'^web/release/(?P<ID>\d+)$', 'git.ReleaseGit', name='releaseweburl'),
+#    url(r'^web/list/$', 'git.ListGitMessage', name='listweburl'),
+#    url(r'^web/commit/$', 'git.CommitGit', name='commitweburl'),
+#    url(r'^web/rollback/(?P<ID>\d+)/$', 'git.RollbackGit', name='rollbackweburl'),
+#    url(r'^web/release/(?P<ID>\d+)$', 'git.ReleaseGit', name='releaseweburl'),
 )

@@ -22,12 +22,14 @@ def LoginUser(request):
         next = request.GET['next']
     else:
         next = '/'
-
-    if request.method == "POST":
-        form = LoginUserForm(request, data=request.POST)
-        if form.is_valid():
-            auth.login(request, form.get_user())
-            return HttpResponseRedirect(request.POST['next'])
+	#print request.session['captcha_answer']
+    if request.method == "POST" and request.POST.has_key('captcha'):
+		form = LoginUserForm(request, data=request.POST)
+		captcha = request.POST['captcha']
+		answer = unicode(request.session['captcha_answer'])
+		if form.is_valid() and captcha == answer:
+			auth.login(request, form.get_user())
+			return HttpResponseRedirect(request.POST['next'])
     else:
         form = LoginUserForm(request)
 
@@ -35,6 +37,7 @@ def LoginUser(request):
         'request':request,
         'form':form,
         'next':next,
+		'captcha_error':u'验证码错误'
     }
 
     return render_to_response('UserManage/login.html',kwvars,RequestContext(request))

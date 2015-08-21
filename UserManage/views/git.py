@@ -42,12 +42,9 @@ def RollbackGit(request,ID):
 			}
 		return  render_to_response('UserManage/release.message.html',kwvars,RequestContext(request))
 
-	comhash = Popen('git log -1 --pretty=format:"%H"',shell=True,stdout=PIPE).stdout.read()
-	comAuthor = Popen('git log -1 --pretty=format:"%cn"',shell=True,stdout=PIPE).stdout.read()
-	comment = Popen('git log -1 --pretty=format:"%s"',shell=True,stdout=PIPE).stdout.read()
-	Date = Popen('git log -1 --pretty=format:"%ct"',shell=True,stdout=PIPE).stdout.read()
-	comDate = datetime.datetime.fromtimestamp(int(Date)).strftime('%Y-%m-%d %H:%M:%S')
-	GitMessage.objects.create(comhash=comhash,comAuthor=comAuthor,comDate=comDate,comment=comment)
+	com = Popen('git log -1 --pretty=format:"%H %cn %s %ct"',shell=True,stdout=PIPE).stdout.read().split(' ')
+	comDate = datetime.datetime.fromtimestamp(int(com[3])).strftime('%Y-%m-%d %H:%M:%S')
+	GitMessage.objects.create(comhash=com[0],comAuthor=com[1],comDate=comDate,comment=com[2])
 
 	return HttpResponseRedirect(reverse('listweburl'))
 		
@@ -75,11 +72,9 @@ def CommitGit(request):
 					}
 				return  render_to_response('UserManage/release.message.html',kwvars,RequestContext(request))
 
-			comhash = Popen('git log -1 --pretty=format:"%H"',shell=True,stdout=PIPE).stdout.read()
-			comAuthor = Popen('git log -1 --pretty=format:"%cn"',shell=True,stdout=PIPE).stdout.read()
-			Date = Popen('git log -1 --pretty=format:"%ct"',shell=True,stdout=PIPE).stdout.read()
-			comDate = datetime.datetime.fromtimestamp(int(Date)).strftime('%Y-%m-%d %H:%M:%S')
-			GitMessage.objects.create(comhash=comhash,comAuthor=comAuthor,comDate=comDate,comment=comment)
+			com = Popen('git log -1 --pretty=format:"%H %cn %ct"',shell=True,stdout=PIPE).stdout.read().split(' ')
+			comDate = datetime.datetime.fromtimestamp(int(com[2])).strftime('%Y-%m-%d %H:%M:%S')
+			GitMessage.objects.create(comhash=com[0],comAuthor=com[1],comDate=comDate,comment=comment)
 			return HttpResponseRedirect(reverse('listweburl'))
 	else:
 		form = EditGitCommentForm()
@@ -110,11 +105,9 @@ def ReleaseGit(request,ID):
 		return HttpResponse(u'连接远程服务器推送代码出错...')
 
 	kwvars = {
-		'error_message':stderr.read(),
+		#'error_message':stderr.read(),
 		'success_message':stdout.read(),
 		'requset':request,
 		}
-	print stdout.read()
-	print stderr.read()
 	ssh.close()
 	return render_to_response('UserManage/release.message.html',kwvars,RequestContext(request))

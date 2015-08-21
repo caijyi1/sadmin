@@ -70,3 +70,12 @@ class GitMessage(models.Model):
 
 	def __unicode__(self):
 		return self.comhash
+
+class AppMessage(models.Model):
+	appname = models.CharField(max_length=10)
+	version = models.CharField(max_length=12)
+	pid = models.IntegerField(max_length=10)
+	md5sum = models.CharField(max_length=40)
+
+	def __unicode__(self):
+		return self.appname
