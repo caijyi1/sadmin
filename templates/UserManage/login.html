@@ -22,16 +22,17 @@
             {% endfor %}
 
  				<div class="form-group">
-					<label class="control-label col-md-2 col-sm-4">验证码</label>
+					<!-- <label class="control-label col-md-2 col-sm-4">验证码</label> -->
 					<div class="row">
-                    <div class="col-md-2 col-sm-4">
-						<input class="form-control" id="captcha" name="captcha" type="text" />
+						<div class="col-md-offset-2 col-sm-offset-4 col-md-2 col-sm-4"> 
+							<input class="form-control" id="captcha" name="captcha" type="text" />
+						 </div>
+						<div class="col-md-offset-2 col-sm-offset-4 col-md-2 col-sm4"> 
+							<img src={% url "captchaurl" %} alt="" width="90" height="40" border="0">
+						</div>
+						<div class="col-md-offset-2 col-sm-offset-4 col-md-10 col-sm-8">    
+						</div>
 					</div>
-					<div class="col-md-2 col-sm4">
-						<img src={% url "captchaurl" %} alt="" width="90" height="40" border="0">
-                    <div class="col-md-offset-2 col-sm-offset-4 col-md-10 col-sm-8">
-					</div>    
-                    </div>
                 </div>
 
 

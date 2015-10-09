@@ -33,13 +33,15 @@ def ListAppMessage(request):
 def RollbackApp(request,ID):
 	appname = AppMessage.objects.filter(id=ID)[0].appname
 	version = AppMessage.objects.filter(id=ID)[0].version
-	pid = AppMessage.objects.filter(id=ID)[0].pid
+	#pid = AppMessage.objects.filter(id=ID)[0].pid
 	md5sum = AppMessage.objects.filter(id=ID)[0].md5sum
+	pattern_pid = re.compile(r'out:\s+(\d{1,6})\s')
 	
-	if 'gs_' in appname:
+	if 'dispatcher' not in appname:
 		try:
-			check_call('fab  gamerollback:version=%s,app_name=%s'% (version,appname),shell=True)
-		except CalledProcessError,e:
+			result=Popen("fab gamerollback:version=%s,app_name=%s"% (version,appname),shell=True,stdout=PIPE).stdout.read()
+			pid = int(pattern_pid.search(result).group(1).strip())
+		except AttributeError, e:
 			kwvars = {
 				'request':request,
 				'error_message':str(e),
@@ -47,9 +49,9 @@ def RollbackApp(request,ID):
 			return  render_to_response('UserManage/release.message.html',kwvars,RequestContext(request))
 	elif 'dispatcher'== appname:
 		try:
-			check_call('fab disrollback:version=%s'% version,shell=True)
-
-		except CalledProcessError, e:
+			result=Popen("fab disrollback:version=%s"% version,shell=True,stdout=PIPE).stdout.read()
+			pid = int(pattern_pid.search(result).group(1).strip())
+		except AttributeError, e:
 			kwvars = {
 				'request':request,
 				'error_message':str(e),
@@ -67,13 +69,15 @@ def RollbackApp(request,ID):
 def ReleaseApp(request,ID):
 	appname = AppMessage.objects.filter(id=ID)[0].appname
 	version = time.strftime("%Y%m%d%H%M")
-	pid = AppMessage.objects.filter(id=ID)[0].pid
+	#pid = AppMessage.objects.filter(id=ID)[0].pid
 	pattern = re.compile(r'out: (.*)\s/opt/project')
+	pattern_pid = re.compile(r'out:\s+(\d{1,6})\s')
 	
 	if 'dispatcher' not in appname:
 		try:
 			result=Popen('fab  gamerelease:app_name=%s,version=%s' % (appname,version),shell=True,stdout=PIPE).stdout.read()
 			md5sum=pattern.search(result).group(1).strip()
+			pid = int(pattern_pid.search(result).group(1).strip())
 		except AttributeError, e:
 			kwvars = {
 				'request':request,
@@ -84,6 +88,7 @@ def ReleaseApp(request,ID):
 		try:
 			result=Popen('fab disrelease:version=%s' % version,shell=True,stdout=PIPE).stdout.read()
 			md5sum=pattern.search(result).group(1).strip()
+			pid = int(pattern_pid.search(result).group(1).strip())
 		except AttributeError, e:
 			kwvars = {
 				'request':request,
@@ -100,12 +105,12 @@ def ReleaseApp(request,ID):
 @PermissionVerify()
 def StopApp(request,ID):
 	appname = AppMessage.objects.filter(id=ID)[0].appname
-	pattern = re.compile(r'out: root\s+(\d{1,6})\s')
+	pattern = re.compile(r'out:\s+(\d{1,6})\s')
 
 	if 'dispatcher' not in appname:
 		try:
 			result=Popen('fab stopgame:app_name=%s'% (appname),shell=True,stdout=PIPE).stdout.read()
-			pid = int(pattern.search(result).group(1))
+			pid = pattern.search(result).group(1)
 		except AttributeError, e:
 			AppMessage.objects.filter(id=ID).update(pid=0)
 			return HttpResponseRedirect(reverse('listappurl'))
@@ -114,7 +119,6 @@ def StopApp(request,ID):
 		try:
 			result = Popen('fab stopdis',shell=True,stdout=PIPE).stdout.read()
 			pid = pattern.search(result).group(1)
-			print pid
 		except AttributeError, e:
 			AppMessage.objects.filter(id=ID).update(pid=0)
 			return HttpResponseRedirect(reverse('listappurl'))
@@ -129,7 +133,8 @@ def StopApp(request,ID):
 @PermissionVerify()
 def StartApp(request,ID):
 	appname = AppMessage.objects.filter(id=ID)[0].appname
-	pattern = re.compile(r'out: root\s+(\d{1,6})\s')
+	pattern = re.compile(r'out:\s+(\d{1,6})\s')
+	pattern_dis = re.compile(r'out: root\s+(\d{1,6})\s')
 
 	if 'dispatcher' not in appname:
 		try:
@@ -144,13 +149,12 @@ def StartApp(request,ID):
 	elif 'dispatcher' == appname:
 		try:
 			result=Popen('fab startdis',shell=True,stdout=PIPE).stdout.read()
-			pid = pattern.search(result).group(1)
+			pid = int(pattern_dis.search(result).group(1))
 		except AttributeError, e:
 			kwvars = {
 				'request':request,
 				'error_message':u'游戏启动出现异常...',
 			}
 			return  render_to_response('UserManage/release.message.html',kwvars,RequestContext(request))
-	
 	AppMessage.objects.filter(id=ID).update(pid=pid)
 	return HttpResponseRedirect(reverse('listappurl'))

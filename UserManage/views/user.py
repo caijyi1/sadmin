@@ -37,7 +37,6 @@ def LoginUser(request):
         'request':request,
         'form':form,
         'next':next,
-		'captcha_error':u'验证码错误'
     }
 
     return render_to_response('UserManage/login.html',kwvars,RequestContext(request))

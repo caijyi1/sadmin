@@ -2,11 +2,12 @@
 <html>
     <head>
         <meta http-equiv="content-type" content="text/html; charset=utf-8">
-        
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximun-scale=1.0,user-scalable=no"/>
         <title>{% block title %}{% endblock %}</title>
         
         <!-- Bootstrap -->
         <link href="/static/css/bootstrap.css" rel="stylesheet">
+		<link href="/static/images/favicon.ico" rel="shortcut icon"/>
         <script src="/static/js/jquery-1.11.0.min.js"></script>
         <script src="/static/js/bootstrap.min.js"></script>
         
@@ -32,7 +33,7 @@
             <div class="collapse navbar-collapse">
                 {% if user.is_authenticated %}
                     <ul class="nav navbar-nav">
-                        <li {% if request.path = '/' %} class="active" {% endif %}><a href="/">Home</a></li>
+						<li {% if request.path = '/' %} class="active" {% endif %}><a href="/"><i class="icon-home"></i>Home</a></li>
                         <li {% if 'about' in request.path %} class="active" {% endif %}><a href="/about">关于</a></li>
                     </ul>
 

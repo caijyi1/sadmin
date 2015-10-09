@@ -33,7 +33,7 @@
                     <td>{{ i.pid }}</td>
 					<td>{{ i.md5sum }}</td>
                     <td class="host_buttom">
-						<a class="btn btn-info btn-xs" href={% url "releaseappurl" i.id %} onclick="return confirm('是否确认要发布新版本？')">发布最新版本</a>
+						<a class="btn btn-info btn-xs" href={% url "releaseappurl" i.id %} onclick="return confirm('发布新版本请确认文件已上传！！是否确认要发布新版本？')">发布新版本</a>
 						<a class="btn btn-warning btn-xs" href={% url "rollbackappurl" i.id %} onclick="return confirm('是否确认要回滚版本？')">回滚到此版本</a>
 						{% if i.pid %}
 						<a class="btn btn-danger btn-xs" href={% url "stopappurl" i.id %} onclick="return confirm('是否确认要停服？')">停服</a>
